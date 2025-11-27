@@ -14,7 +14,15 @@ def create_app():
         allow_methods=["*"],
         allow_headers=["*"],
     )
-    
+
+    @app.get("/")
+    def root():
+        return {
+            "message": "Smart Placements Assistance backend is running successfully!",
+            "status": "healthy",
+            "version": "1.0.0"
+        }
+
     app.include_router(user_router)
     app.include_router(auth_router)
     return app

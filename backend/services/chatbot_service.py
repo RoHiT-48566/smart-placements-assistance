@@ -111,6 +111,8 @@ async def get_chatbot_answer(query: str):
         if year:
             filters["year"] = int(year)
 
+        print(f"Filters: {filters}")
+
         if filters:
             if len(filters) == 1:
                 key, value = next(iter(filters.items()))
@@ -144,6 +146,8 @@ async def get_chatbot_answer(query: str):
 
     # 7. Final Prompt
     combined_context = "\n\n".join(filter(None, [chroma_context, stats_context]))
+
+    # print(f"Stats Context : {stats_context}")
 
     prompt = f"""
                 You are an AI-powered Placements Assistance Chatbot designed to help college students understand company-specific hiring information based on provided data.
@@ -192,7 +196,7 @@ async def get_chatbot_answer(query: str):
     response = {"answer": answer, "source": "llm"}
 
     # 9. Cache
-    if answer and response["source"] == "llm" and "Sorry" not in answer:
+    if answer and response["source"] == "llm" and ["sorry","Sorry"] not in answer:
         set_cached_response(query, response)
 
     return response
