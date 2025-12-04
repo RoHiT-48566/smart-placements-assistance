@@ -3,6 +3,8 @@ import { Send, Bot, User, Loader2, MessageSquare } from "lucide-react";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
 
+import { BASE_URL } from "../config/api";
+
 const Chatbot = () => {
   const [messages, setMessages] = useState([
     {
@@ -25,9 +27,12 @@ const Chatbot = () => {
 
   const fetchChatbotResponse = async (query) => {
     try {
-      const response = await axios.get("/chatbot/get-chatbot-answer", {
-        params: { query },
-      });
+      const response = await axios.get(
+        `${BASE_URL}/chatbot/get-chatbot-answer`,
+        {
+          params: { query },
+        }
+      );
       return response.data;
     } catch (error) {
       console.error("Error fetching chatbot response:", error);

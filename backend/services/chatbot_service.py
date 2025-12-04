@@ -196,7 +196,8 @@ async def get_chatbot_answer(query: str):
     response = {"answer": answer, "source": "llm"}
 
     # 9. Cache
-    if answer and response["source"] == "llm" and ["sorry","Sorry"] not in answer:
+    # if answer and response["source"] == "llm" and ["sorry","Sorry"] not in answer:
+    if answer and response["source"] == "llm" and not any(phrase in answer for phrase in ["sorry", "Sorry"]):
         set_cached_response(query, response)
 
     return response

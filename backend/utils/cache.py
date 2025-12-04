@@ -11,7 +11,16 @@ import json
 # json: Used to convert Python dictionaries to JSON strings and back — because Redis stores only strings or byte data.
 
 #  You're connecting to a Redis server running on REDIS_HOST on port REDIS_PORT, using database 0. Redis allows multiple logical databases — here, db=0 refers to the first one.
-redis_client = redis.Redis(host=os.getenv("REDIS_HOST"), port=os.getenv("REDIS_PORT"), db=0)
+# redis_client = redis.Redis(host=os.getenv("REDIS_HOST"), port=os.getenv("REDIS_PORT"), db=0)
+
+redis_client = redis.Redis(
+    host=os.getenv("REDIS_HOST", "localhost"),
+    port=int(os.getenv("REDIS_PORT", 6379)),
+    db=0,
+    decode_responses=True
+)
+
+
 
 def get_cached_response(query: str):
     result = redis_client.get(query)

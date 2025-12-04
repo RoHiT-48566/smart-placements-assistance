@@ -1,0 +1,73 @@
+services:
+  backend:
+    build: ./backend
+    container_name: backend
+    restart: always
+    env_file:
+      - ./backend/.env
+    environment:
+      - REDIS_HOST=redis
+      - CHROMA_HOST=chromadb
+      - CHATBOT_ENDPOINT=http://ollama:11434/api/generate
+      - CHATBOT_MODEL=llama3.2:1b
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+      - chromadb
+      - ollama
+    networks:
+      - spa-network
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    restart: always
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - spa-network
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - spa-network
+
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: chromadb
+    restart: always
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./chroma_data:/data
+    networks:
+      - spa-network
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    restart: always
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./ollama_data:/root/.ollama
+      - ./entrypoint.sh:/entrypoint.sh
+    entrypoint: ["/bin/sh", "/entrypoint.sh"]
+    deploy:
+      resources:
+        limits:
+          cpus: "6.0"
+          memory: 6G
+    networks:
+      - spa-network
+
+networks:
+  spa-network:
+    driver: bridge

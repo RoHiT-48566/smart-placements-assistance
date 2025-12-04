@@ -3,6 +3,10 @@ __pycache__/
 *.pyc
 *.pyo
 
+# Ignore Docker volume data
+ollama_data/
+chroma_data/
+
 # Ignore database and logs
 db/chroma_data/
 chroma.sqlite3
